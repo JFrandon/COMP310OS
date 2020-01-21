@@ -44,7 +44,6 @@ int main() {
 		fflush(stdin);
 		//parses and execute input
 		error_code = parse(userinput);
-		if (error_code > 10 && error_code < 20) printf("Script terminated with error code %d\n", error_code - 10);
 	//if error code is negative panic, terminate. (No script and built-in program should return negative error)
 	} while (error_code >= 0 );
 	return error_code;

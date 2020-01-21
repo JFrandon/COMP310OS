@@ -5,14 +5,13 @@ This Shell program has been tested and ran on mimi.cs.mcgill.ca (teach-vwc.cs.mc
 # at the beginning of a line signifies a comment
 
 Exit in a script exits the specified script
-Shell memory is shared between the parent shell and the script
+Every Script gets a copy of its parent shell but cannot modify the parent shell's memory
 
 Error codes Specification:
 	0 - No error
 	1 - Unknown Command
 	2 - Too few Arguments
-	3 - More than 1000 Script calls (A Script might be calling itself over and over)
+	3 - More than 900 recursive Script calls (A Script might be calling itself over and over)
 	4 - Shell memory Full (Can't allocate new name->value pair)
 	5 - Script file does not exist
 	6 - Variable to be printed does not exist in memory
-	1x- Script terminated with error x

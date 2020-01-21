@@ -1,12 +1,15 @@
 #include<stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include "shellmemory.h"
 #include "shell.h"
 
 // counts how many scripts have been recursively called
-#define MAX_REC 1000
-int script_rec_depth = 0;
+#define MAX_REC 900 //maximum recursive depth before mimi.cs.mcgill.ca (teach-vwc.cs.mcgill.ca) refuses to to the fork nessesary for running a script
+int script_rec_depth;
 
 //helper method for var assignment where `set x 1 2` is interpreted ass `set x "1 2 "` 
 char* strconcat(char** words, int wcount) {
@@ -38,7 +41,6 @@ help\t Displays all the commands\n\
 
 //quits shell or script if in script
 int quit(int argc, char* argv[]) {
-	if (script_rec_depth) return 10; //if at least 1 script called return the script with err 0;
 	puts("Bye!");
 	exit(0);
 }
@@ -65,44 +67,51 @@ int print(int argc, char* argv[]) {
 	free(var);
 	return 0;
 }
-int run(int argc, char* argv[]) {
-	if (argc < 2) return 2; // no file specified
-	FILE* p;
-	int error_code =  0;
+
+// for every line of the file parse and execute, only launched by a child process
+int execute_script(FILE* p) {
 	// line array
 	char line[1000];
+	int error_code = 0;
 	// max recursion level attained
 	if (++script_rec_depth >= MAX_REC) {
 		printf("Reached %d script calls, is a script calling himself?\n", script_rec_depth);
-		script_rec_depth--; //decrease recursuion level before returning
-		return 3;
+		exit(3);
 	}
-	// unable to open said script
-	if (!(p = fopen(argv[1], "rt"))) {
-		puts("Specified File does not exist");
-		script_rec_depth--; //decrease recursuion level before returning
-		return 5;
-	}
-	// for every line of the file parse and execute
+	// reads and execute every line
 	fgets(line, 999, p);
 	while (!feof(p))
 	{
 		error_code = parse(line);
-		if (error_code != 0) {
-			if (error_code > 9 && error_code < 20) error_code -= 10; // subscript returned before final line convert to standard error
+		if (error_code != 0) { // if error close file and terminate script
 			fclose(p);
-			script_rec_depth--; //decrease recursuion level before returning
-			return error_code+10; //return script error code
+			exit(error_code); //return script error code
 		}
 		fgets(line, 999, p);
 	}
-	fclose(p);
-	script_rec_depth--;//decrease recursuion level before returning
+	fclose(p); // if end of file close and terminate script
+	exit(error_code);
+}
+
+int run(int argc, char* argv[]) {
+	if (argc < 2) return 2; // no file specified
+	FILE* p;
+	int error_code =  0;
+	int pid;
+	// unable to open said script
+	if (!(p = fopen(argv[1], "rt"))) {
+		puts("Specified File does not exist");
+		return 5;
+	}
+	if ((pid = fork()) == 0) execute_script(p); //launches the script in a child process
+	fclose(p); //closes file handler for the parent
+	wait(&error_code); //waits for the script to terminate
+	error_code = WEXITSTATUS(error_code); // gets error code from script
 	return error_code;
 }
 
 
-void* commands[5][2] = { {"help",&help},{"quit",&quit},{"set",&set},{"print",&print}, {"run",&run} };
+void* commands[6][2] = { {"help",&help},{"quit",&quit},{"set",&set},{"print",&print}, {"run",&run},{"exit",&quit}, };
 
 int interpreter(int argc, char *argv[] ) {
 	int error_code;
