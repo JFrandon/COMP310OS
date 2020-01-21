@@ -110,13 +110,13 @@ int run(int argc, char* argv[]) {
 	return error_code;
 }
 
-
-void* commands[6][2] = { {"help",&help},{"quit",&quit},{"set",&set},{"print",&print}, {"run",&run},{"exit",&quit}, };
+#define COMMANDNUM 6
+void* commands[COMMANDNUM][2] = { {"help",&help},{"quit",&quit},{"set",&set},{"print",&print}, {"run",&run},{"exit",&quit}, };
 
 int interpreter(int argc, char *argv[] ) {
 	int error_code;
 	if (argc == 0) return 0;
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < COMMANDNUM; i++) {
 		if (strcmp(argv[0], (char*) commands[i][0])==0) {
 			int (*f)(int, char* []) = commands[i][1];
 			error_code = f(argc, argv);
