@@ -30,7 +30,7 @@ char* strconcat(char** words, int wcount) {
 //prints help
 int help(int argc, char* argv[]) {
 	puts("Valid Commands:\n\
-COMMAND\t DESCRIPTION\n\
+ COMMAND\t DESCRIPTION\n\
  help\t Displays all the commands\n\
  quit\t Exits / terminates the shell with 'Bye!'\n\
  set VAR STRING\t Assigns a value to shell memory\n\
@@ -42,6 +42,7 @@ COMMAND\t DESCRIPTION\n\
 //quits shell or script if in script
 int quit(int argc, char* argv[]) {
 	puts("Bye!");
+	if (script_rec_depth) return 10; // if in a script terminate script instead of shell
 	exit(0);
 }
 

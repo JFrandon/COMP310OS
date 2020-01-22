@@ -17,3 +17,4 @@ Error codes Specification:
 	4 - Shell memory Full (Can't allocate new name->value pair)
 	5 - Script file does not exist
 	6 - Variable to be printed does not exist in memory
+	10 - Script exited without error
