@@ -7,6 +7,8 @@ This Shell program has been tested and ran on mimi.cs.mcgill.ca (teach-vwc.cs.mc
 Exit in a script exits the specified script
 Every Script gets a copy of its parent shell but cannot modify the parent shell's memory
 
+exit is an alias of quit
+
 Error codes Specification:
 	0 - No error
 	1 - Unknown Command

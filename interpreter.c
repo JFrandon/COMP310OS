@@ -31,7 +31,7 @@ char* strconcat(char** words, int wcount) {
 int help(int argc, char* argv[]) {
 	puts("Valid Commands:\n\
 COMMAND\t DESCRIPTION\n\
-help\t Displays all the commands\n\
+ help\t Displays all the commands\n\
  quit\t Exits / terminates the shell with 'Bye!'\n\
  set VAR STRING\t Assigns a value to shell memory\n\
  print VAR\t Displays the STRING assigned to VAR\n\
@@ -76,37 +76,33 @@ int execute_script(FILE* p) {
 	// max recursion level attained
 	if (++script_rec_depth >= MAX_REC) {
 		printf("Reached %d script calls, is a script calling himself?\n", script_rec_depth);
-		exit(3);
+		return 3;
 	}
 	// reads and execute every line
 	fgets(line, 999, p);
 	while (!feof(p))
 	{
 		error_code = parse(line);
-		if (error_code != 0) { // if error close file and terminate script
-			fclose(p);
-			exit(error_code); //return script error code
+		if (error_code != 0) { // if error terminate script
+			return error_code; //return script error code
 		}
 		fgets(line, 999, p);
 	}
-	fclose(p); // if end of file close and terminate script
-	exit(error_code);
+	return error_code;
 }
 
 int run(int argc, char* argv[]) {
 	if (argc < 2) return 2; // no file specified
 	FILE* p;
 	int error_code =  0;
-	int pid;
 	// unable to open said script
 	if (!(p = fopen(argv[1], "rt"))) {
 		puts("Specified File does not exist");
 		return 5;
 	}
-	if ((pid = fork()) == 0) execute_script(p); //launches the script in a child process
+	error_code = execute_script(p); //launches the script in a child process
+	script_rec_depth--;
 	fclose(p); //closes file handler for the parent
-	wait(&error_code); //waits for the script to terminate
-	error_code = WEXITSTATUS(error_code); // gets error code from script
 	return error_code;
 }
 
