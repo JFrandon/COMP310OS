@@ -5,7 +5,7 @@ This Shell program has been tested and ran on mimi.cs.mcgill.ca (teach-vwc.cs.mc
 # at the beginning of a line signifies a comment
 
 Exit in a script exits the specified script
-Every Script gets a copy of its parent shell but cannot modify the parent shell's memory
+Shell and script share memory 
 
 exit is an alias of quit
 
