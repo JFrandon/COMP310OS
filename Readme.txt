@@ -17,4 +17,7 @@ Error codes Specification:
 	4 - Shell memory Full (Can't allocate new name->value pair)
 	5 - Script file does not exist
 	6 - Variable to be printed does not exist in memory
+	7 - Could not open one of the programs for exec command
+	8 - Could not load one of the programs for exec command (RAM full)
+	9 - Could not start execution (Cpu already executing programs / recursion using exec not permitted)
 	10 - Script exited without error

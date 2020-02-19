@@ -32,7 +32,7 @@ int parse(char* ui) {
 }
 
 
-int main() {
+int shellUI() {
 	int error_code = 0;
 	//prints welcome message
 	puts(motd);

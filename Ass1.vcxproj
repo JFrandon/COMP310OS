@@ -75,12 +75,20 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
+    <ClCompile Include="cpu.c" />
     <ClCompile Include="interpreter.c" />
+    <ClCompile Include="kernel.c" />
+    <ClCompile Include="pcb.c" />
+    <ClCompile Include="ram.c" />
     <ClCompile Include="shell.c" />
     <ClCompile Include="shellmemory.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cpu.h" />
     <ClInclude Include="interpreter.h" />
+    <ClInclude Include="kernel.h" />
+    <ClInclude Include="pcb.h" />
+    <ClInclude Include="ram.h" />
     <ClInclude Include="shell.h" />
     <ClInclude Include="shellmemory.h" />
   </ItemGroup>

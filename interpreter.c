@@ -6,6 +6,9 @@
 #include <sys/wait.h>
 #include "shellmemory.h"
 #include "shell.h"
+#include "kernel.h"
+#include "ram.h"
+#include "pcb.h"
 
 // counts how many scripts have been recursively called
 #define MAX_REC 900 //maximum recursive depth before mimi.cs.mcgill.ca (teach-vwc.cs.mcgill.ca) refuses to to the fork nessesary for running a script
@@ -92,7 +95,7 @@ int execute_script(FILE* p) {
 	return error_code;
 }
 
-int run(int argc, char* argv[]) {
+int run_command(int argc, char* argv[]) { //name clash with run from cpu.c
 	if (argc < 2) return 2; // no file specified
 	FILE* p;
 	int error_code =  0;
@@ -107,8 +110,20 @@ int run(int argc, char* argv[]) {
 	return error_code;
 }
 
-#define COMMANDNUM 6
-void* commands[COMMANDNUM][2] = { {"help",&help},{"quit",&quit},{"set",&set},{"print",&print}, {"run",&run},{"exit",&quit}, };
+int exec(int argc, char* argv[]) {
+	int error = 0;
+	if(argc<2) return 2; // no files specified
+	script_rec_depth += (argc - 1); // add one level of programtic recursion to allow programs to off themselves
+	for (int i = 1; i < argc; i++) {
+		if((error = myinit(argv[i]))) return error;
+	}
+	error = scheduler();
+	script_rec_depth -= (argc - 1);//
+	return error;
+}
+
+#define COMMANDNUM 7
+void* commands[COMMANDNUM][2] = { {"help",&help},{"quit",&quit},{"set",&set},{"print",&print}, {"run",&run_command},{"exit",&quit},{"exec",&exec} };
 
 int interpreter(int argc, char *argv[] ) {
 	int error_code;
