@@ -71,11 +71,11 @@ int scheduler() {
 		setIP(pcb->PC);
 		error = run(min(QUANTA,(pcb->end - pcb->PC)));
 		pcb->PC = getIP();
-		if ((pcb->PC + QUANTA < pcb->end) && error > -1) { //if didn't terminate
+		if ((pcb->PC + QUANTA < pcb->end) && !error) { //if didn't terminate
 			addToReady(pcb);
 		}
 		else {
-			if (error < 0) //if crashed
+			if (error != 0) //if crashed
 			{
 				printf("Program at address %d terminated at line %d out of %d\n", pcb->start, (pcb->PC - pcb->start)+1, (pcb->end - pcb->start)-1);
 			}

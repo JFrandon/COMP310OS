@@ -14,7 +14,9 @@ print y
 print z
 print bobbie
 #this enters infinite recursion (script calling himself)
+
 run testfile.txt
+
 
 # Expected common mistakes
 set

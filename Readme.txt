@@ -20,4 +20,4 @@ Error codes Specification:
 	7 - Could not open one of the programs for exec command
 	8 - Could not load one of the programs for exec command (RAM full)
 	9 - Could not start execution (Cpu already executing programs / recursion using exec not permitted)
-	10 - Script exited without error
+	10 - Script or program exited without error

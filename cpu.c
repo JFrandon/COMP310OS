@@ -28,8 +28,8 @@ int run(int quanta) {
 		char* command = getFromRam(GLOBALCPU.IP);
 		strcpy(GLOBALCPU.IR, command);
 		error = parse(GLOBALCPU.IR);
-		if (error > 0) {
-			return -1;
+		if (error != 0) {
+			return error;
 		}
 	}
 	return error;
